@@ -28,6 +28,7 @@ import {
 } from "../../features/lostreasonSlice";
 import Loader from "../Loader";
 import axios from "axios";
+import Select from 'react-select'
 function Setting() {
   const apiUrl = process.env.REACT_APP_API_URL;
   const DBuUrl = process.env.REACT_APP_DB_URL;
@@ -111,6 +112,7 @@ function Setting() {
     agent_mobile: "",
     client_access: "",
     agent_status: "",
+    agents:[]
   });
 
   const [formDatastatus, setformDatastatus] = useState({
@@ -342,6 +344,8 @@ function Setting() {
       headers: {
         "Content-Type": "application/json",
         "mongodb-url": DBuUrl,
+            Authorization: "Bearer " + localStorage.getItem("token"),
+
       },
       body: JSON.stringify(companydetails),
     })
@@ -370,6 +374,8 @@ function Setting() {
         headers: {
           "Content-Type": "application/json",
           "mongodb-url": DBuUrl,
+            Authorization: "Bearer " + localStorage.getItem("token"),
+
         },
       }
       );
@@ -399,6 +405,8 @@ function Setting() {
         headers: {
           "Content-Type": "application/json",
           "mongodb-url": DBuUrl,
+            Authorization: "Bearer " + localStorage.getItem("token"),
+
         },
       }
       );
@@ -2405,10 +2413,11 @@ function Setting() {
                                             <option value>User Type</option>
                                             <option value="user">Agent</option>
                                             <option value="TeamLeader">Team Leader</option>
+                                            <option value="GroupLeader">Group Leader</option>
                                           </select>
                                         </div>
                                       </div>
-                                      <div className="col-md-4" style={{display:assigntlnone}}>
+                                     {formData?.role=="user"&& <div className="col-md-4" style={{display:assigntlnone}}>
                                         <div className="form-group">
                                           <select
                                             value={formData?.assigntl}
@@ -2430,7 +2439,43 @@ function Setting() {
                                             
                                           </select>
                                         </div>
-                                      </div>
+                                      </div>}
+                                            {/** by sanjiv select team leaders  */}
+                                      {formData?.role=="GroupLeader"&&<div className="col-md-4" >
+                                        <div className="form-group">
+                                          {/* <select
+                                            value={formData?.assigntl}
+                                            className="form-control"
+                                            onChange={(e) =>
+                                              setFormData({
+                                                ...formData,
+                                                assigntl: e.target.value,
+                                              })
+                                            }
+                                            name="assigntl"
+                                            id="aroll"
+                                          >
+
+                                            <option value>Assign Team Leader</option>
+                                            {TeamLeader?.map((TeamLeader1)=>{  
+                                              return(<option value={TeamLeader1?._id}>{TeamLeader1?.agent_name}</option>);
+                                            })}
+                                            
+                                          </select> */}
+
+                                        <Select
+                                              closeMenuOnSelect={false}
+                                              // components={animatedComponents}
+                                              defaultValue={[]}
+                                              isMulti
+                                              onChange={e=>{
+                                                console.log(e)
+                                                setFormData({...formData, agents: e.map(agent=>agent.value)})
+                                              }}
+                                              options={TeamLeader?.map(v=>{return{label:v.agent_name, value:v?._id}})}
+                                            />
+                                        </div>
+                                      </div>}
 
                                       {/* <div className="col-md-3">
                                         <div className="form-group">
